@@ -3,9 +3,9 @@ from django.db.models.signals import post_save
 from django.dispatch import receiver
 from rest_framework.authtoken.models import Token
 
-from core.submodels.organization_models import *
-from core.submodels.party_models import *
-from core.submodels.person_models import *
+from core.models_dir.organization_models import *
+from core.models_dir.party_models import *
+from core.models_dir.person_models import *
 
 
 @receiver(post_save, sender=User)

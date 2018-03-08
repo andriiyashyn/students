@@ -1,0 +1,247 @@
+{% load staticfiles %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>Студенти</title>
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/footer-navbar.css' %}">
+    <link rel="stylesheet" href="{% static 'css/cover.css' %}">
+    <link rel="stylesheet" href="{% static 'css/core.css' %}">
+</head>
+<body class="text-center" style="height: fit-content; min-height: 100%">
+<div class="cover-container d-flex p-3 mx-auto flex-column">
+
+    <header class="masthead">
+        <div class="inner">
+            <h3 class="masthead-brand">Студенти</h3>
+            <nav class="nav nav-masthead justify-content-center">
+                <a class="nav-link groups " href="/groups">Групи</a>
+                <a class="nav-link active" href="/students">Студенти</a>
+            </nav>
+        </div>
+    </header>
+
+    <main role="main" class="inner cover text-left">
+        <div class="card margin_card" style="margin-bottom: 0; background-color: transparent">
+            <div class="card-header">
+                <h3 class="card-title">Детальна інформація</h3>
+            </div>
+
+            <div class="card-block">
+                <p class="card-text">
+                <form class="form-group margin_form" style="margin-top: 10px" method="post" action="
+            /student/save/{{ person.id|default:'' }}">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label for="secondName" data-model-name="secondName">Прізвище:</label>
+                        <input type="text" class="form-control" name="secondName" id="secondName"
+                               value="{{ person.secondName }}"
+                               required>
+                    </div>
+                    <div class="form-group">
+                        <label for="firstName" data-model-name="firstName">Ім'я:</label>
+                        <input type="text" class="form-control" name="firstName" id="firstName"
+                               value="{{ person.firstName }}"
+                               required>
+                    </div>
+                    <div class="form-group">
+                        <label for="patronymicName" data-model-name="patronymicName">По-батькові:</label>
+                        <input type="text" class="form-control" name="patronymicName" id="patronymicName"
+                               value="{{ person.patronymicName }}" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="birthDate" data-model-name="birthDate">Дата народження:</label>
+                        <input type="date" class="form-control" name="birthDate" id="birthDate"
+                               value="{{ person.birthDate|date:"Y-m-d" }}" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="gender" data-model-name="gender">Стать:</label>
+                        <select class="form-control" name="gender" id="gender" required>
+                            {% if person.gender == "Male" %}
+                                <option value="Male" selected>Чоловік</option>
+                                <option value="Female">Жінка</option>
+                            {% else %}
+                                <option value="Male">Чоловік</option>
+                                <option value="Female" selected>Жінка</option>
+                            {% endif %}
+
+                        </select>
+                    </div>
+
+
+                    <div class="form-group">
+                        <label for="infoText" data-model-name="infoText">Додаткова інформація:</label>
+                        <input type="text" class="form-control" name="infoText" id="infoText"
+                               value="{{ person.infoText|default:'' }}">
+                    </div>
+
+                    <input class="btn btn-secondary pull-right button_submit" type="submit" value="Зберігти">
+                </form>
+            </div>
+        </div>
+
+        <div class="card margin_card" style="margin-bottom: 0; background-color: transparent">
+            <div class="card-header">
+                <h3 class="card-title">Контактна інформація</h3>
+            </div>
+
+            <div class="card-block">
+                <form class="form-group margin_form" method="post" action="
+            /student/contact-info/save/{{ person.id|default:'' }}">
+                    {% csrf_token %}
+
+
+                    <div class="row">
+                        <div class="col">
+                            <table id="data" class="table table-sm table-striped">
+                                <thead>
+                                <tr align="center">
+                                    <th rowspan="2">Тип</th>
+                                    <th rowspan="2">Контакт</th>
+                                    <th rowspan="2"></th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% for contact in contacts %}
+                                    <tr align="center">
+                                        <td>{{ contact.contactType.name }}</td>
+                                        <td>{{ contact.contact }}</td>
+                                        <td><a target="_self"
+                                               class="btn btn-secondary pull-right"
+                                               href="/student/contact-info/delete/{{ contact.id }}">
+                                            Видалити
+                                        </a></td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+
+                    <div class="form-group">
+                        <label for="contact_types" data-model-name="contact_types">Тип:</label>
+                        <select class="form-control" name="contact_types" id="contact_types" title="contact_types"
+                                required>
+                            {% for type in contact_types %}
+                                <option value="{{ type.id }}">{{ type.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="contact" data-model-name="contact">Контакт:</label>
+                        <input type="text" class="form-control" name="contact" id="contact" required>
+                    </div>
+
+
+                    <input class="btn btn-secondary pull-right button_submit" type="submit" value="Зберігти">
+                </form>
+
+
+                <div class="card" style="margin: 20px; background-color: transparent">
+                    <div class="card-header">
+                        <h3 class="card-title">Створити тип</h3>
+                    </div>
+
+                    <div class="card-block">
+                        <form class="form-group" style="margin: 20px" method="post" action="
+            /student/contact-type/save/{{ person.id|default:'' }}">
+                            {% csrf_token %}
+
+                            <div class="form-group">
+                                <label for="name" data-model-name="name">Назва:</label>
+                                <input type="text" class="form-control" name="name" id="name" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="template" data-model-name="template">Шаблон:</label>
+                                <input type="text" class="form-control" name="template" id="template" required>
+                            </div>
+
+                            <input class="btn btn-secondary pull-right button_submit" type="submit" value="Зберігти">
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <br>
+        <div class="card margin_card" style="margin-top: 0; background-color: transparent">
+            <div class="card-header">
+                <h3 class="card-title">Група</h3>
+            </div>
+            <div class="card-block">
+                <form class="form-group margin_form" style="margin-top: 10px" method="post" action="
+            /student/relationship/save/{{ person.id|default:'' }}">
+                    {% csrf_token %}
+
+                    <div class="row">
+                        <div class="col">
+                            <table id="datat" class="table table-sm table-striped">
+                                <thead>
+                                <tr align="center">
+                                    <th rowspan="2">Група</th>
+                                    <th rowspan="2">Дата початку</th>
+                                    <th rowspan="2">Дата кінця</th>
+                                    <th rowspan="2"></th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% for item in group_relationship %}
+                                    <tr align="center">
+                                        <td>{{ item.group.name }}</td>
+                                        <td>{{ item.relationship.startDate|date:"Y-m-d" }}</td>
+                                        {% if item.relationship.is_max %}
+                                            <td>----</td>
+                                            <td><a target="_self"
+                                                   class="btn btn-secondary pull-right"
+                                                   href="/student/relationship/delete/{{ item.relationship.id }}">
+                                                Деактивувати
+                                            </a></td>
+                                        {% else %}
+                                            <td>{{ item.relationship.endDate|date:"Y-m-d" }}</td>
+                                            <td></td>
+                                        {% endif %}
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="group" data-model-name="group">Група:</label>
+                        <select class="form-control" name="group" id="group" title="group"
+                                required>
+                            {% for group in group_list %}
+                                <option value="{{ group.id }}">{{ group.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <input class="btn btn-secondary pull-right button_submit" type="submit" value="Перевести">
+
+                </form>
+            </div>
+        </div>
+    </main>
+
+    <footer class="mastfoot mt-auto">
+        <div class="inner">
+            <p>АПЕПС КПІ 2018</p>
+        </div>
+    </footer>
+</div>
+
+<script src="{% static 'js/jquery-3.3.1.min.js' %}"></script>
+<script src="{% static 'js/popper.min.js' %}"></script>
+<script src="{% static 'js/bootstrap.min.js' %}"></script>
+<script src="{% static 'js/datatables.min.js' %}"></script>
+</body>
+</html>
