@@ -220,7 +220,9 @@
                                     <th rowspan="2">Група</th>
                                     <th rowspan="2">Дата початку</th>
                                     <th rowspan="2">Дата кінця</th>
-                                    <th rowspan="2"></th>
+                                    {% if current_user_is_admin.is_admin %}
+                                        <th rowspan="2"></th>
+                                    {% endif %}
                                 </tr>
                                 </thead>
                                 <tbody>
@@ -271,12 +273,40 @@
             <div class="card-header">
                 <h3 class="card-title">Успішність</h3>
             </div>
-            <div class="card-block margin_form">
-                <label for="mark" data-model-name="mark">Середній бал:</label>
-                <input type="text" class="form-control" name="mark" id="secondName" placeholder="5"
-                        {% if not current_user_is_admin.is_admin %}
-                       readonly
-                        {% endif %}>
+
+            <div class="row">
+                <div class="col">
+                    <table id="data" class="table table-sm table-striped">
+                        <thead>
+                        <tr align="center">
+                            <th rowspan="2">Семестр</th>
+                            <th rowspan="2">Середній бал</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr align="center">
+                            <td>1</td>
+                            <td>75</td>
+                        </tr>
+                        <tr align="center">
+                            <td>2</td>
+                            <td>72</td>
+                        </tr>
+                        <tr align="center">
+                            <td>3</td>
+                            <td>70</td>
+                        </tr>
+                        <tr align="center">
+                            <td>4</td>
+                            <td>78</td>
+                        </tr>
+                        <tr align="center">
+                            <td>5</td>
+                            <td>80</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </main>

@@ -24,7 +24,7 @@ class GroupList(TemplateView):
         if self.request.GET.get('searchText') is not None:
             context['group_list'] = load_group_by_search_text(self.request.GET.get('searchText'),
                                                               organization_category_caption)
-            context['current_user_is_admin'] = self.request.user.is_admin
+            context['current_user_is_admin'] = Client.objects.get(pk=self.request.user.id)
         else:
             context['group_list'] = load_group(organization_category_caption)
             context['current_user_is_admin'] = Client.objects.get(pk=self.request.user.id)
