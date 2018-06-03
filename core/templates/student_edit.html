@@ -22,6 +22,10 @@
             <nav class="nav nav-masthead justify-content-center">
                 <a class="nav-link groups " href="/groups">Групи</a>
                 <a class="nav-link active" href="/students">Студенти</a>
+                {% if current_user_is_admin.is_admin %}
+                    <a class="nav-link" href="/users">Користувачі</a>
+                {% endif %}
+                <a href="/accounts/logout/" class="nav-link">Вийти</a>
             </nav>
         </div>
     </header>
@@ -41,28 +45,43 @@
                         <label for="secondName" data-model-name="secondName">Прізвище:</label>
                         <input type="text" class="form-control" name="secondName" id="secondName"
                                value="{{ person.secondName }}"
-                               required>
+                               required
+                                {% if not current_user_is_admin.is_admin %}
+                               readonly
+                                {% endif %}>
                     </div>
                     <div class="form-group">
                         <label for="firstName" data-model-name="firstName">Ім'я:</label>
                         <input type="text" class="form-control" name="firstName" id="firstName"
                                value="{{ person.firstName }}"
-                               required>
+                               required
+                                {% if not current_user_is_admin.is_admin %}
+                               readonly
+                                {% endif %}>
                     </div>
                     <div class="form-group">
                         <label for="patronymicName" data-model-name="patronymicName">По-батькові:</label>
                         <input type="text" class="form-control" name="patronymicName" id="patronymicName"
-                               value="{{ person.patronymicName }}" required>
+                               value="{{ person.patronymicName }}" required
+                                {% if not current_user_is_admin.is_admin %}
+                               readonly
+                                {% endif %}>
                     </div>
                     <div class="form-group">
                         <label for="birthDate" data-model-name="birthDate">Дата народження:</label>
                         <input type="date" class="form-control" name="birthDate" id="birthDate"
-                               value="{{ person.birthDate|date:"Y-m-d" }}" required>
+                               value="{{ person.birthDate|date:"Y-m-d" }}" required
+                                {% if not current_user_is_admin.is_admin %}
+                               readonly
+                                {% endif %}>
                     </div>
 
                     <div class="form-group">
                         <label for="gender" data-model-name="gender">Стать:</label>
-                        <select class="form-control" name="gender" id="gender" required>
+                        <select class="form-control" name="gender" id="gender" required
+                                {% if not current_user_is_admin.is_admin %}
+                                readonly
+                                {% endif %}>
                             {% if person.gender == "Male" %}
                                 <option value="Male" selected>Чоловік</option>
                                 <option value="Female">Жінка</option>
@@ -78,10 +97,16 @@
                     <div class="form-group">
                         <label for="infoText" data-model-name="infoText">Додаткова інформація:</label>
                         <input type="text" class="form-control" name="infoText" id="infoText"
-                               value="{{ person.infoText|default:'' }}">
+                               value="{{ person.infoText|default:'' }}"
+                                {% if not current_user_is_admin.is_admin %}
+                               readonly
+                                {% endif %}>
                     </div>
 
-                    <input class="btn btn-secondary pull-right button_submit" type="submit" value="Зберегти">
+
+                    {% if current_user_is_admin.is_admin %}
+                        <input class="btn btn-secondary pull-right button_submit" type="submit" value="Зберегти">
+                    {% endif %}
                 </form>
             </div>
         </div>
@@ -104,7 +129,9 @@
                                 <tr align="center">
                                     <th rowspan="2">Тип</th>
                                     <th rowspan="2">Контакт</th>
-                                    <th rowspan="2"></th>
+                                    {% if current_user_is_admin.is_admin %}
+                                        <th rowspan="2"></th>
+                                    {% endif %}
                                 </tr>
                                 </thead>
                                 <tbody>
@@ -112,11 +139,13 @@
                                     <tr align="center">
                                         <td>{{ contact.contactType.name }}</td>
                                         <td>{{ contact.contact }}</td>
-                                        <td><a target="_self"
-                                               class="btn btn-secondary pull-right"
-                                               href="/student/contact-info/delete/{{ contact.id }}">
-                                            Видалити
-                                        </a></td>
+                                        {% if current_user_is_admin.is_admin %}
+                                            <td><a target="_self"
+                                                   class="btn btn-secondary pull-right"
+                                                   href="/student/contact-info/delete/{{ contact.id }}">
+                                                Видалити
+                                            </a></td>
+                                        {% endif %}
                                     </tr>
                                 {% endfor %}
                                 </tbody>
@@ -124,51 +153,56 @@
                         </div>
                     </div>
 
+                    {% if current_user_is_admin.is_admin %}
 
-                    <div class="form-group">
-                        <label for="contact_types" data-model-name="contact_types">Тип:</label>
-                        <select class="form-control" name="contact_types" id="contact_types" title="contact_types"
-                                required>
-                            {% for type in contact_types %}
-                                <option value="{{ type.id }}">{{ type.name }}</option>
-                            {% endfor %}
-                        </select>
-                    </div>
+                        <div class="form-group">
+                            <label for="contact_types" data-model-name="contact_types">Тип:</label>
+                            <select class="form-control" name="contact_types" id="contact_types" title="contact_types"
+                                    required>
+                                {% for type in contact_types %}
+                                    <option value="{{ type.id }}">{{ type.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
 
-                    <div class="form-group">
-                        <label for="contact" data-model-name="contact">Контакт:</label>
-                        <input type="text" class="form-control" name="contact" id="contact" required>
-                    </div>
+                        <div class="form-group">
+                            <label for="contact" data-model-name="contact">Контакт:</label>
+                            <input type="text" class="form-control" name="contact" id="contact" required>
+                        </div>
 
 
-                    <input class="btn btn-secondary pull-right button_submit" type="submit" value="Зберегти">
+                        <input class="btn btn-secondary pull-right button_submit" type="submit" value="Зберегти">
+                    {% endif %}
                 </form>
 
+                {% if current_user_is_admin.is_admin %}
 
-                <div class="card" style="margin: 20px; background-color: transparent">
-                    <div class="card-header">
-                        <h3 class="card-title">Створити тип</h3>
-                    </div>
+                    <div class="card" style="margin: 20px; background-color: transparent">
+                        <div class="card-header">
+                            <h3 class="card-title">Створити тип</h3>
+                        </div>
 
-                    <div class="card-block">
-                        <form class="form-group" style="margin: 20px" method="post" action="
+                        <div class="card-block">
+                            <form class="form-group" style="margin: 20px" method="post" action="
             /student/contact-type/save/{{ person.id|default:'' }}">
-                            {% csrf_token %}
+                                {% csrf_token %}
 
-                            <div class="form-group">
-                                <label for="name" data-model-name="name">Назва:</label>
-                                <input type="text" class="form-control" name="name" id="name" required>
-                            </div>
+                                <div class="form-group">
+                                    <label for="name" data-model-name="name">Назва:</label>
+                                    <input type="text" class="form-control" name="name" id="name" required>
+                                </div>
 
-                            <div class="form-group">
-                                <label for="template" data-model-name="template">Шаблон:</label>
-                                <input type="text" class="form-control" name="template" id="template" required>
-                            </div>
+                                <div class="form-group">
+                                    <label for="template" data-model-name="template">Шаблон:</label>
+                                    <input type="text" class="form-control" name="template" id="template" required>
+                                </div>
 
-                            <input class="btn btn-secondary pull-right button_submit" type="submit" value="Зберегти">
-                        </form>
+                                <input class="btn btn-secondary pull-right button_submit" type="submit"
+                                       value="Зберегти">
+                            </form>
+                        </div>
                     </div>
-                </div>
+                {% endif %}
             </div>
         </div>
         <br>
@@ -199,11 +233,14 @@
                                         <td>{{ item.relationship.startDate|date:"Y-m-d" }}</td>
                                         {% if item.relationship.is_max %}
                                             <td>----</td>
+                                                                {% if current_user_is_admin.is_admin %}
+
                                             <td><a target="_self"
                                                    class="btn btn-secondary pull-right"
                                                    href="/student/relationship/delete/{{ item.relationship.id }}">
                                                 Деактивувати
                                             </a></td>
+                                                                    {% endif %}
                                         {% else %}
                                             <td>{{ item.relationship.endDate|date:"Y-m-d" }}</td>
                                             <td></td>
@@ -214,6 +251,8 @@
                             </table>
                         </div>
                     </div>
+
+                                    {% if current_user_is_admin.is_admin %}
 
                     <div class="form-group">
                         <label for="group" data-model-name="group">Група:</label>
@@ -226,18 +265,22 @@
                     </div>
 
                     <input class="btn btn-secondary pull-right button_submit" type="submit" value="Перевести">
+                {% endif %}
 
                 </form>
             </div>
         </div>
 
-    <div class="card margin_card" style="margin-top: 0; background-color: transparent">
+        <div class="card margin_card" style="margin-top: 0; background-color: transparent">
             <div class="card-header">
                 <h3 class="card-title">Успішність</h3>
             </div>
             <div class="card-block margin_form">
                 <label for="mark" data-model-name="mark">Середній бал:</label>
-                        <input type="text" class="form-control" name="mark" id="secondName" placeholder="5">
+                <input type="text" class="form-control" name="mark" id="secondName" placeholder="5"
+                                {% if not current_user_is_admin.is_admin %}
+                               readonly
+                                {% endif %}>
             </div>
         </div>
     </main>

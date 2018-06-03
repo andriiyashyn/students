@@ -3,6 +3,7 @@ from django.contrib import admin
 from core.models import PartyType, OrganizationCategory, PassportType, ContactType, Party, PartyContact, \
     Organization, OrganizationHasOrganizationCategory, Person, PersonCategory, PersonHasPersonCategory, Passport,  \
     Relationship, RelationshipType
+from core.models_dir.user_model import Client
 
 
 class PartyAdmin(admin.ModelAdmin):
@@ -61,6 +62,10 @@ class PassportTypeAdmin(admin.ModelAdmin):
     model = PassportType
 
 
+class ClientAdmin(admin.ModelAdmin):
+    model = Client
+
+
 admin.site.register(Party, PartyAdmin)
 admin.site.register(PartyContact, PartyContactAdmin)
 admin.site.register(ContactType, ContactTypeAdmin)
@@ -75,3 +80,4 @@ admin.site.register(PersonCategory, PersonCategoryAdmin)
 admin.site.register(PersonHasPersonCategory, PersonHasPersonCategoryAdmin)
 admin.site.register(Passport, PassportAdmin)
 admin.site.register(PassportType, PassportTypeAdmin)
+admin.site.register(Client, ClientAdmin)

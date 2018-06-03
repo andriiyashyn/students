@@ -22,6 +22,10 @@
             <nav class="nav nav-masthead justify-content-center">
                 <a class="nav-link groups active" href="/groups">Групи</a>
                 <a class="nav-link teachers" href="/students">Студенти</a>
+                {% if current_user_is_admin.is_admin %}
+                    <a class="nav-link" href="/users">Користувачі</a>
+                {% endif %}
+                <a href="/accounts/logout/" class="nav-link">Вийти</a>
             </nav>
         </div>
     </header>
@@ -41,12 +45,14 @@
                                 <button class="btn btn-primary my-0 my-sm-0" type="submit">Пошук</button>
                             </form>
                         </div>
-                        <div class="col-sm-4">
-                            <a href="/group/add" class="btn btn-primary">
-                                <img style="width: 25px" src="{% static 'images/edit_white.png' %}" alt="Edit">
-                                <span>Додати нову групу</span>
-                            </a>
-                        </div>
+                        {% if current_user_is_admin.is_admin %}
+                            <div class="col-sm-4">
+                                <a href="/group/add" class="btn btn-primary">
+                                    <img style="width: 25px" src="{% static 'images/edit_white.png' %}" alt="Edit">
+                                    <span>Додати нову групу</span>
+                                </a>
+                            </div>
+                        {% endif %}
                     </div>
                 </div>
                 {% if group_list %}
@@ -68,9 +74,11 @@
                                     <a href="/group/edit/{{ group.id }}"><img style="width: 25px"
                                                                               src="{% static 'images/edit_white.png' %}"
                                                                               alt="Edit"></a>
-                                    <a href="/group/delete/{{ group.id }}"><img style="width: 25px"
-                                                                                src="{% static 'images/delete_white.png' %}"
-                                                                                alt="Edit"></a>
+                                    {% if current_user_is_admin.is_admin %}
+                                        <a href="/group/delete/{{ group.id }}"><img style="width: 25px"
+                                                                                    src="{% static 'images/delete_white.png' %}"
+                                                                                    alt="Edit"></a>
+                                    {% endif %}
                                 </td>
                             </tr>
                         {% endfor %}

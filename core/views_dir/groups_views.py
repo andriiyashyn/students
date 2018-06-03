@@ -1,17 +1,21 @@
 from datetime import date, datetime
 
-from django.http import HttpResponseRedirect
-from django.views.generic import TemplateView
+from django.contrib.auth.decorators import login_required
 from django.db import transaction
+from django.http import HttpResponseRedirect
+from django.utils.decorators import method_decorator
+from django.views.generic import TemplateView
 
 from core.models_dir.organization_models import OrganizationCategory, OrganizationHasOrganizationCategory, Organization
 from core.models_dir.party_models import PartyType, Party, Relationship
 from core.models_dir.person_models import Person
+from core.models_dir.user_model import Client
 
 organization_category_caption = 'Група'
 party_type = 'ORGANIZATION'
 
 
+@method_decorator(login_required, name='dispatch')
 class GroupList(TemplateView):
     template_name = 'groups.html'
 
@@ -20,11 +24,14 @@ class GroupList(TemplateView):
         if self.request.GET.get('searchText') is not None:
             context['group_list'] = load_group_by_search_text(self.request.GET.get('searchText'),
                                                               organization_category_caption)
+            context['current_user_is_admin'] = self.request.user.is_admin
         else:
             context['group_list'] = load_group(organization_category_caption)
+            context['current_user_is_admin'] = Client.objects.get(pk=self.request.user.id)
         return context
 
 
+@method_decorator(login_required, name='dispatch')
 class EditGroup(TemplateView):
     template_name = 'group_edit.html'
 
@@ -34,9 +41,11 @@ class EditGroup(TemplateView):
         group = Organization.objects.get(id=pk)
         context['group'] = group
         context['student_list'] = load_students_per_group(group)
+        context['current_user_is_admin'] = Client.objects.get(id=self.request.user.id)
         return context
 
 
+@method_decorator(login_required, name='dispatch')
 class DeleteGroup(TemplateView):
     template_name = 'groups.html'
 
@@ -44,9 +53,11 @@ class DeleteGroup(TemplateView):
         context = super().get_context_data(**kwargs)
         delete_group(kwargs['id'])
         context['group_list'] = load_group(organization_category_caption)
+        context['current_user_is_admin'] = Client.objects.get(id=self.request.user.id)
         return context
 
 
+@method_decorator(login_required, name='dispatch')
 class SaveGroup(TemplateView):
     template_name = 'groups.html'
 
@@ -57,11 +68,18 @@ class SaveGroup(TemplateView):
         else:
             update_group(kwargs['id'], request.POST)
         context['group_list'] = load_group(organization_category_caption)
+        context['current_user_is_admin'] = Client.objects.get(id=self.request.user.id)
         return HttpResponseRedirect('/groups')
 
 
+@method_decorator(login_required, name='dispatch')
 class CreateGroup(TemplateView):
     template_name = 'group_edit.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['current_user_is_admin'] = Client.objects.get(id=self.request.user.id)
+        return context
 
 
 def load_group(caption):

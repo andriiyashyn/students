@@ -22,6 +22,10 @@
             <nav class="nav nav-masthead justify-content-center">
                 <a class="nav-link groups active" href="/groups">Групи</a>
                 <a class="nav-link teachers" href="/students">Студенти</a>
+                {% if current_user_is_admin.is_admin %}
+                    <a class="nav-link" href="/users">Користувачі</a>
+                {% endif %}
+                <a href="/accounts/logout/" class="nav-link">Вийти</a>
             </nav>
         </div>
     </header>
@@ -39,17 +43,25 @@
                     <div class="form-group">
                         <label for="name" data-model-name="name">Назва:</label>
                         <input type="text" class="form-control" name="name" id="name"
-                               value="{{ group.name }}"
-                               required>
+                               value="{{ group.name }}" required
+                                {% if not current_user_is_admin.is_admin %}
+                               readonly
+                                {% endif %}>
+
                     </div>
 
                     <div class="form-group">
                         <label for="infoText" data-model-name="infoText">Додаткова інформація:</label>
                         <input type="text" class="form-control" name="infoText" id="infoText"
-                               value="{{ group.infoText|default:'' }}">
+                               value="{{ group.infoText|default:'' }}"
+                                {% if not current_user_is_admin.is_admin %}
+                               readonly
+                                {% endif %}>
                     </div>
 
-                    <input class="btn btn-secondary pull-right button_submit" type="submit" value="Зберегти">
+                    {% if current_user_is_admin.is_admin %}
+                        <input class="btn btn-secondary pull-right button_submit" type="submit" value="Зберегти">
+                    {% endif %}
                 </form>
             </div>
         </div>
@@ -78,16 +90,25 @@
                             <td>{{ student.firstName }}</td>
                             <td>{{ student.patronymicName }}</td>
                             <td>{{ student.birthDate|date:"Y-m-d" }}</td>
-                            <td><a target="_self"
-                                   class="btn btn-secondary pull-right"
-                                   href="/student/edit/{{ student.id }}">
-                                Детально
-                            </a></td>
-                            <td><a target="_self"
-                                   class="btn btn-secondary pull-right"
-                                   href="/student/delete/{{ student.id }}">
-                                Видалити
-                            </a></td>
+                            {% if current_user_is_admin.is_admin %}
+                                <td><a target="_self"
+                                       class="btn btn-secondary pull-right"
+                                       href="/student/edit/{{ student.id }}">
+                                    Детально
+                                </a></td>
+                                <td><a target="_self"
+                                       class="btn btn-secondary pull-right"
+                                       href="/student/delete/{{ student.id }}">
+                                    Видалити
+                                </a></td>
+                            {% else %}
+                                <td></td>
+                                <td><a target="_self"
+                                       class="btn btn-secondary pull-right"
+                                       href="/student/edit/{{ student.id }}">
+                                    Детально
+                                </a></td>
+                            {% endif %}
                         </tr>
                     {% endfor %}
                     </tbody>

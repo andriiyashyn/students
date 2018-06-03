@@ -22,6 +22,10 @@
             <nav class="nav nav-masthead justify-content-center">
                 <a class="nav-link groups " href="/groups">Групи</a>
                 <a class="nav-link active" href="/students">Студенти</a>
+                {% if current_user_is_admin.is_admin %}
+                    <a class="nav-link" href="/users">Користувачі</a>
+                {% endif %}
+                <a href="/accounts/logout/" class="nav-link">Вийти</a>
             </nav>
         </div>
     </header>
@@ -40,12 +44,14 @@
                                 <button class="btn btn-primary my-0 my-sm-0" type="submit">Пошук</button>
                             </form>
                         </div>
-                        <div class="col-sm-4">
-                            <a href="/student/add" class="btn btn-primary">
-                                <img style="width: 25px" src="{% static 'images/edit_white.png' %}" alt="Edit">
-                                <span>Додати нового студента</span>
-                            </a>
-                        </div>
+                        {% if current_user_is_admin.is_admin %}
+                            <div class="col-sm-4">
+                                <a href="/student/add" class="btn btn-primary">
+                                    <img style="width: 25px" src="{% static 'images/edit_white.png' %}" alt="Edit">
+                                    <span>Додати нового студента</span>
+                                </a>
+                            </div>
+                        {% endif %}
                     </div>
                 </div>
 
@@ -70,11 +76,13 @@
                                 <td>{{ student.birthDate|date:"Y-m-d" }}</td>
                                 <td>
                                     <a href="/student/edit/{{ student.id }}"><img style="width: 25px"
-                                                                              src="{% static 'images/edit_white.png' %}"
-                                                                              alt="Edit"></a>
-                                    <a href="/student/delete/{{ student.id }}"><img style="width: 25px"
-                                                                                src="{% static 'images/delete_white.png' %}"
-                                                                                alt="Edit"></a>
+                                                                                  src="{% static 'images/edit_white.png' %}"
+                                                                                  alt="Edit"></a>
+                                    {% if current_user_is_admin.is_admin %}
+                                        <a href="/student/delete/{{ student.id }}"><img style="width: 25px"
+                                                                                        src="{% static 'images/delete_white.png' %}"
+                                                                                        alt="Edit"></a>
+                                    {% endif %}
                                 </td>
                             </tr>
                         {% endfor %}

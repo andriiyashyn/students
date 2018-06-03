@@ -1,18 +1,22 @@
 from datetime import datetime, date
-from django.shortcuts import redirect
-from django.views.generic import TemplateView
 
+from django.contrib.auth.decorators import login_required
 from django.db import transaction
+from django.shortcuts import redirect
+from django.utils.decorators import method_decorator
+from django.views.generic import TemplateView
 
 from core.models_dir.organization_models import OrganizationCategory, OrganizationHasOrganizationCategory, Organization
 from core.models_dir.party_models import Relationship, RelationshipType, Party, PartyType, PartyContact, ContactType
 from core.models_dir.person_models import Person, PersonCategory, PersonHasPersonCategory
+from core.models_dir.user_model import Client
 
 organization_category = 'Група'
 person_category = 'Студент'
 party_type = 'PERSON'
 
 
+@method_decorator(login_required, name='dispatch')
 class StudentList(TemplateView):
     template_name = 'students.html'
 
@@ -20,11 +24,15 @@ class StudentList(TemplateView):
         context = super().get_context_data(**kwargs)
         if self.request.GET.get('searchText') is not None:
             context['student_list'] = load_students_per_search_text(self.request.GET.get('searchText'))
+            context['current_user_is_admin'] = Client.objects.get(id=self.request.user.id)
         else:
             context['student_list'] = load_students()
+            context['current_user_is_admin'] = Client.objects.get(id=self.request.user.id)
+
         return context
 
 
+@method_decorator(login_required, name='dispatch')
 class EditStudent(TemplateView):
     template_name = 'student_edit.html'
 
@@ -35,13 +43,15 @@ class EditStudent(TemplateView):
         context['person'] = person
         context['group_list'] = load_group(organization_category)
         context['group_relationship'] = load_person_groups(load_all_group(organization_category),
-                                                                        person)
+                                                           person)
         context['contacts'] = load_contact_information(person)
         context['contact_types'] = load_contact_types()
         context['now_date'] = datetime.now()
+        context['current_user_is_admin'] = Client.objects.get(id=self.request.user.id)
         return context
 
 
+@method_decorator(login_required, name='dispatch')
 class DeleteStudent(TemplateView):
     template_name = 'students.html'
 
@@ -49,9 +59,11 @@ class DeleteStudent(TemplateView):
         context = super().get_context_data(**kwargs)
         delete_student(kwargs['id'])
         context['student_list'] = load_students()
+        context['current_user_is_admin'] = Client.objects.get(id=self.request.user.id)
         return context
 
 
+@method_decorator(login_required, name='dispatch')
 class SaveStudent(TemplateView):
     template_name = 'students.html'
 
@@ -63,18 +75,22 @@ class SaveStudent(TemplateView):
             update_student(kwargs['id'], request.POST)
             person_id = kwargs['id']
         context['student_list'] = load_students()
+        context['current_user_is_admin'] = Client.objects.get(id=self.request.user.id)
         return redirect('/student/edit/' + str(person_id))
 
 
+@method_decorator(login_required, name='dispatch')
 class CreateStudent(TemplateView):
     template_name = 'student_edit.html'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['group_list'] = load_group(organization_category)
+        context['current_user_is_admin'] = Client.objects.get(id=self.request.user.id)
         return context
 
 
+@method_decorator(login_required, name='dispatch')
 class DeleteRelationshipView(TemplateView):
     template_name = 'student_edit.html'
 
@@ -83,6 +99,7 @@ class DeleteRelationshipView(TemplateView):
         return redirect('/student/edit/' + str(person.id))
 
 
+@method_decorator(login_required, name='dispatch')
 class SaveRelationshipView(TemplateView):
     template_name = 'student_edit.html'
 
@@ -91,6 +108,7 @@ class SaveRelationshipView(TemplateView):
         return redirect('/student/edit/' + str(kwargs['id']))
 
 
+@method_decorator(login_required, name='dispatch')
 class SaveContactInfoView(TemplateView):
     template_name = 'student_edit.html'
 
@@ -99,6 +117,7 @@ class SaveContactInfoView(TemplateView):
         return redirect('/student/edit/' + str(kwargs['id']))
 
 
+@method_decorator(login_required, name='dispatch')
 class SaveContactTypeView(TemplateView):
     template_name = 'student_edit.html'
 
@@ -107,6 +126,7 @@ class SaveContactTypeView(TemplateView):
         return redirect('/student/edit/' + str(kwargs['id']))
 
 
+@method_decorator(login_required, name='dispatch')
 class DeleteContactTypeView(TemplateView):
     template_name = 'student_edit.html'
 
