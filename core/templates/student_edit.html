@@ -22,9 +22,6 @@
             <nav class="nav nav-masthead justify-content-center">
                 <a class="nav-link groups " href="/groups">Групи</a>
                 <a class="nav-link active" href="/students">Студенти</a>
-                {% if current_user_is_admin.is_admin %}
-                    <a class="nav-link" href="/users">Користувачі</a>
-                {% endif %}
                 <a href="/accounts/logout/" class="nav-link">Вийти</a>
             </nav>
         </div>
@@ -233,14 +230,14 @@
                                         <td>{{ item.relationship.startDate|date:"Y-m-d" }}</td>
                                         {% if item.relationship.is_max %}
                                             <td>----</td>
-                                                                {% if current_user_is_admin.is_admin %}
+                                            {% if current_user_is_admin.is_admin %}
 
-                                            <td><a target="_self"
-                                                   class="btn btn-secondary pull-right"
-                                                   href="/student/relationship/delete/{{ item.relationship.id }}">
-                                                Деактивувати
-                                            </a></td>
-                                                                    {% endif %}
+                                                <td><a target="_self"
+                                                       class="btn btn-secondary pull-right"
+                                                       href="/student/relationship/delete/{{ item.relationship.id }}">
+                                                    Деактивувати
+                                                </a></td>
+                                            {% endif %}
                                         {% else %}
                                             <td>{{ item.relationship.endDate|date:"Y-m-d" }}</td>
                                             <td></td>
@@ -252,20 +249,19 @@
                         </div>
                     </div>
 
-                                    {% if current_user_is_admin.is_admin %}
+                    {% if current_user_is_admin.is_admin %}
+                        <div class="form-group">
+                            <label for="group" data-model-name="group">Група:</label>
+                            <select class="form-control" name="group" id="group" title="group"
+                                    required>
+                                {% for group in group_list %}
+                                    <option value="{{ group.id }}">{{ group.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
 
-                    <div class="form-group">
-                        <label for="group" data-model-name="group">Група:</label>
-                        <select class="form-control" name="group" id="group" title="group"
-                                required>
-                            {% for group in group_list %}
-                                <option value="{{ group.id }}">{{ group.name }}</option>
-                            {% endfor %}
-                        </select>
-                    </div>
-
-                    <input class="btn btn-secondary pull-right button_submit" type="submit" value="Перевести">
-                {% endif %}
+                        <input class="btn btn-secondary pull-right button_submit" type="submit" value="Перевести">
+                    {% endif %}
 
                 </form>
             </div>
@@ -278,9 +274,9 @@
             <div class="card-block margin_form">
                 <label for="mark" data-model-name="mark">Середній бал:</label>
                 <input type="text" class="form-control" name="mark" id="secondName" placeholder="5"
-                                {% if not current_user_is_admin.is_admin %}
-                               readonly
-                                {% endif %}>
+                        {% if not current_user_is_admin.is_admin %}
+                       readonly
+                        {% endif %}>
             </div>
         </div>
     </main>

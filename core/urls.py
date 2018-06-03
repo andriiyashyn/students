@@ -5,7 +5,6 @@ from django.contrib.auth import views as auth_views
 from core.views_dir.groups_views import GroupList, EditGroup, DeleteGroup, SaveGroup, CreateGroup
 from core.views_dir.students_views import SaveContactInfoView, SaveContactTypeView, DeleteContactTypeView, \
     DeleteRelationshipView, SaveRelationshipView, EditStudent, DeleteStudent, SaveStudent, CreateStudent, StudentList
-from core.views_dir.user_views import UsersList, EditUser, SaveUser, CreateUser, DeleteUser
 
 urlpatterns = {
     path('', GroupList.as_view(), name='Groups'),
@@ -35,11 +34,6 @@ urlpatterns = {
 
     path('accounts/login/', auth_views.login, name='login'),
     path('accounts/logout/', auth_views.logout, {'next_page': '/'}, name='logout'),
-    path('users/', UsersList.as_view(), name='Users'),
-    path('user/edit/<int:id>', EditUser.as_view(), name='EditUser'),
-    path('user/save/<int:id>', SaveUser.as_view(), name='SaveUser'),
-    path('user/add', CreateUser.as_view(), name='CreateUser'),
-    path('user/delete/<int:id>', DeleteUser.as_view(), name='DeleteUser'),
 }
 
 urlpatterns = format_suffix_patterns(urlpatterns)

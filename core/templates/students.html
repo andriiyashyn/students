@@ -22,9 +22,6 @@
             <nav class="nav nav-masthead justify-content-center">
                 <a class="nav-link groups " href="/groups">Групи</a>
                 <a class="nav-link active" href="/students">Студенти</a>
-                {% if current_user_is_admin.is_admin %}
-                    <a class="nav-link" href="/users">Користувачі</a>
-                {% endif %}
                 <a href="/accounts/logout/" class="nav-link">Вийти</a>
             </nav>
         </div>
