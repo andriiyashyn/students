@@ -8,6 +8,16 @@ class Person(models.Model):
         ('Male', 'Male'),
         ('Female', 'Female')
     )
+    ACADEMIC_RANK = (
+        ('Docent', 'Docent'),
+        ('SeniorResearcher', 'SeniorResearcher'),
+        ('Professor', 'Professor')
+    )
+    DEGREE = (
+        ('Postgraduate', 'Postgraduate'),
+        ('PhD', 'PhD'),
+        ('PHD','PHD')
+    )
     party = models.ForeignKey(Party, on_delete=models.CASCADE)
     startDate = models.DateField(max_length=100)
     endDate = models.DateField(max_length=100)
@@ -16,6 +26,15 @@ class Person(models.Model):
     patronymicName = models.CharField(max_length=45)
     birthDate = models.DateField(max_length=255)
     gender = models.CharField(max_length=20, choices=GENDER)
+    passportInfo = models.CharField(max_length=20, default='')
+    workingRoom = models.CharField(max_length=10, default='')
+    salary = models.FloatField(default=0)
+    academic_rank = models.CharField(max_length=20, choices=ACADEMIC_RANK)
+    specialty = models.CharField(max_length=100)
+    degree = models.CharField(max_length=20, choices=DEGREE)
+    year_of_getting_degree = models.CharField(max_length=10)
+    rating = models.IntegerField(default=5)
+
     infoText = models.CharField(max_length=255, blank=True, null=True)
 
     def __str__(self):
